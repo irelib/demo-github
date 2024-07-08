@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { importAssetsFile } from "@/utils";
+
 // 歌词字符串
 import { onMounted } from "vue";
 
+// 歌曲文件
+const musicFile = importAssetsFile("assets/艾福杰尼 - SORRY.mp3");
+// 歌词字符串
 const lyricsString = `[00:00.00]作词 : 艾福杰尼
 [00:01.00]作曲 : 艾福杰尼
 [00:15.61]I'm so sorry about that
@@ -203,7 +208,7 @@ onMounted(() => {
 
 <template>
   <div class="LyricsScroll">
-    <audio src="/src/assets/艾福杰尼%20-%20SORRY.mp3" controls></audio>
+    <audio :src="musicFile" controls></audio>
 
     <div class="lyricsContainer">
       <div class="box">
