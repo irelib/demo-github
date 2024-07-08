@@ -13,7 +13,7 @@
     </div>
 
     <div :id="`card-${index + 1}`" class="card" v-for="(src, index) in images" @mousedown="mousedown" @mouseup="mouseup($event, index + 1)">
-      <img :src="src" alt="" />
+      <img :src="src" alt="" @load="loadedImageCount++" />
 
       <div class="info">
         <div class="title">安哦我能否你我符号放进去哦发外国文化个人去我非常发额分隔板访问该合同出去吃高人给我去外地去</div>
@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import { AnimeParams } from "animejs";
 import anime from "animejs/lib/anime.es";
-import { nextTick, onMounted, onUnmounted, ref } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { importAssetsFile } from "@/utils";
 
 type ColumnsHeightType = {
@@ -50,6 +50,8 @@ const timer = ref();
 const images = ref<string[]>([]);
 // 需要加载本地图片的数量
 const loadImageTotal = ref<number>(85);
+// 加载完成的图片的数量
+const loadedImageCount = ref<number>(0);
 for (let i = 0; i < loadImageTotal.value; i++) {
   images.value.push(importAssetsFile(`assets/images/${i + 1}.jpg`));
 }
@@ -362,11 +364,15 @@ const resizeCardDetail = () => {
   } as AnimeParams);
 };
 
-onMounted(() => {
-  setTimeout(() => {
-    reLayout();
-  }, 100);
+// 当所有图片全部加载完时重新布局
+watch(
+  () => loadedImageCount.value,
+  (val) => {
+    if (val === loadImageTotal.value) reLayout();
+  },
+);
 
+onMounted(() => {
   window.addEventListener("resize", () => {
     clearTimeout(timer.value);
     timer.value = setTimeout(() => {
