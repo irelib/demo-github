@@ -373,8 +373,8 @@ const resizeCardDetail = () => {
 watch(
   () => loadedImageCount.value,
   (val) => {
+    clearInterval(timer2.value);
     if (val === loadImageTotal.value) {
-      clearInterval(timer2.value);
       reLayout();
     }
   },
