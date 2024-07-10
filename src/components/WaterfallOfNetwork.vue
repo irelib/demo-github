@@ -24,17 +24,10 @@
 </template>
 
 <script setup lang="ts">
+import { ColumnsHeightType } from "@/types";
 import { AnimeParams } from "animejs";
 import anime from "animejs/lib/anime.es";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-
-type ColumnsHeightType = {
-  maxHeight: number;
-  minHeight: number;
-  minHeightIndex: number;
-  cardTotalHeight: number;
-  height: number[];
-};
 
 // 检测系统是否为暗色主题
 const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
