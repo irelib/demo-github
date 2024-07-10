@@ -24,11 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { ColumnsHeightType } from "@/types";
+import { WaterfallLayoutType, WaterfallColumnsHeightType } from "@/types";
 import { AnimeParams } from "animejs";
 import anime from "animejs/lib/anime.es";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import { registerCardSlideInAnimation } from "@/utils/slideIn.ts";
+import { clearAllSlideInAnimation, registerCardSlideInAnimation } from "@/utils/slideIn.ts";
 
 // 检测系统是否为暗色主题
 const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -58,7 +58,7 @@ const baseUrl = ref<string>(baseUrlList.value[0]);
 // 卡片间距
 const cardSpace = ref(20);
 // 瀑布流布局信息
-const layout = ref<{ width: number; columns: number; transition: number }>({
+const layout = ref<WaterfallLayoutType>({
   // 当前布局下卡片的宽度
   width: 0,
   // 当前布局下有几列
@@ -67,7 +67,7 @@ const layout = ref<{ width: number; columns: number; transition: number }>({
   transition: 250,
 });
 // 瀑布流列高信息
-const columnsHeight = ref<ColumnsHeightType>({
+const columnsHeight = ref<WaterfallColumnsHeightType>({
   // 最高列的高度
   maxHeight: 0,
   // 最矮列的高度
@@ -370,6 +370,7 @@ watch(
     clearInterval(timer2.value);
     if (val === loadImageTotal.value) {
       reLayout();
+      // 布局完之后，给卡片注册缓入动画
       nextTick(() => {
         const domList = document.querySelectorAll(".Waterfall .card");
         domList.forEach((dom) => {
@@ -385,9 +386,20 @@ onMounted(() => {
     clearTimeout(timer1.value);
     if (loadedImageCount.value === 0) return;
     timer1.value = setTimeout(() => {
+      // 清除之前的所有已注册的缓入动画
+      clearAllSlideInAnimation();
       resetLayout();
       reLayout(true);
       if (activeCard.value.src) resizeCardDetail();
+      // 布局完之后，重新给卡片注册缓入动画
+      nextTick(() => {
+        setTimeout(() => {
+          const domList = document.querySelectorAll(".Waterfall .card");
+          domList.forEach((dom) => {
+            registerCardSlideInAnimation(dom as HTMLDivElement);
+          });
+        }, layout.value.transition);
+      });
     }, 100);
   });
 

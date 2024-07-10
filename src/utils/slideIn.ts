@@ -2,6 +2,8 @@ import { transformToValue } from "@/utils/index.ts";
 
 // 元素与其缓入动画对象的映射关系
 let slideInMap = new WeakMap();
+// 元素动画数组
+const animationList: Animation[] = [];
 
 // 元素是否在视口下面
 const isBelowViewport = (DOM: HTMLDivElement) => {
@@ -54,6 +56,14 @@ export const registerCardSlideInAnimation = (DOM: HTMLDivElement, distance = 80,
   animation.pause();
   // 将元素与其动画对象设置映射，方便后续使用它的动画对象
   slideInMap.set(DOM, animation);
+  // 保存元素动画
+  animationList.push(animation);
   // 观察元素是否进入视口
   observer.observe(DOM);
+};
+
+// 清除卡片缓入动画
+export const clearAllSlideInAnimation = () => {
+  slideInMap = new WeakMap();
+  animationList.forEach((animation) => animation.cancel());
 };
