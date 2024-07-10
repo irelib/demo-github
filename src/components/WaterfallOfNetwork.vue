@@ -28,6 +28,7 @@ import { ColumnsHeightType } from "@/types";
 import { AnimeParams } from "animejs";
 import anime from "animejs/lib/anime.es";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { registerCardSlideInAnimation } from "@/utils/slideIn.ts";
 
 // 检测系统是否为暗色主题
 const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -369,6 +370,12 @@ watch(
     clearInterval(timer2.value);
     if (val === loadImageTotal.value) {
       reLayout();
+      nextTick(() => {
+        const domList = document.querySelectorAll(".Waterfall .card");
+        domList.forEach((dom) => {
+          registerCardSlideInAnimation(dom as HTMLDivElement);
+        });
+      });
     }
   },
 );
