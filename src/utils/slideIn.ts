@@ -6,7 +6,7 @@ let slideInMap = new WeakMap();
 const animationList: Animation[] = [];
 
 // 元素是否在视口下面
-const isBelowViewport = (DOM: HTMLDivElement) => {
+const isBelowViewport = (DOM: HTMLElement) => {
   const domBounding = DOM.getBoundingClientRect();
   // 元素上边框位置大于视口高度
   return domBounding.top > window.innerHeight;
@@ -27,7 +27,10 @@ const observer = new IntersectionObserver((entries) => {
 });
 
 // 给卡片注册缓入动画
-export const registerCardSlideInAnimation = (DOM: HTMLDivElement, distance = 80, duration = 500) => {
+export const registerCardSlideInAnimation = (DOM: HTMLElement, distance = 80, duration = 500) => {
+  if (!distance) distance = 80;
+  if (!duration) distance = 500;
+
   // 元素在视口内及上面时不做任何处理，即不需要动画效果
   if (!isBelowViewport(DOM)) return;
 

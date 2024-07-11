@@ -9,12 +9,18 @@ export const importAssetsFile = (url: string) => {
 
 // 将元素的transform字符串转换成对象形式
 export const transformToValue = (transform: string): transformToValueType => {
+  let transformObj: transformToValueType = {
+    x: 0,
+    y: 0,
+  };
+  if (!transform) return transformObj;
   transform = transform.replace("translate", "");
   transform = transform.replace("(", "");
   transform = transform.replace(")", "");
   const transformArray = transform.split(",");
-  return {
+  transformObj = {
     x: parseFloat(transformArray[0]),
     y: parseFloat(transformArray[1]),
   };
+  return transformObj;
 };
