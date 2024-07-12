@@ -7,4 +7,6 @@ module.exports = {
 	useTabs: true,
 	// 使用单引号而不是双引号
 	singleQuote: true,
+	// 在对象的括号之间添加空格
+	bracketSpacing: true,
 };
