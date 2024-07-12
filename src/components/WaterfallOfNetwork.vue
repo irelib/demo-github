@@ -28,7 +28,7 @@ import { WaterfallLayoutType, WaterfallColumnsHeightType } from '@/types';
 import { AnimeParams } from 'animejs';
 import anime from 'animejs/lib/anime.es';
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { clearAllSlideInAnimation, registerCardSlideInAnimation } from '@/utils/slideIn.ts';
+import { clearAllSlideInAnimation, registerSlideInAnimation } from '@/utils/slideIn.ts';
 
 // 检测系统是否为暗色主题
 const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -362,6 +362,27 @@ const resizeCardDetail = () => {
 		easing: 'easeOutQuart',
 	} as AnimeParams);
 };
+// 窗口尺寸变化时，重新初始化页面
+const resizeLayout = () => {
+	clearTimeout(timer1.value);
+	if (loadedImageCount.value === 0) return;
+	timer1.value = setTimeout(() => {
+		// 清除之前的所有已注册的缓入动画
+		clearAllSlideInAnimation();
+		resetLayout();
+		reLayout(true);
+		if (activeCard.value.src) resizeCardDetail();
+		// 布局完之后，重新给卡片注册缓入动画
+		nextTick(() => {
+			setTimeout(() => {
+				const domList = document.querySelectorAll('.Waterfall .card');
+				domList.forEach((dom) => {
+					registerSlideInAnimation(dom as HTMLDivElement);
+				});
+			}, layout.value.transition);
+		});
+	}, 100);
+};
 
 // 当所有图片全部加载完时重新布局
 watch(
@@ -370,11 +391,13 @@ watch(
 		clearInterval(timer2.value);
 		if (val === loadImageTotal.value) {
 			reLayout();
-			// 布局完之后，给卡片注册缓入动画
+			// 清除之前的所有已注册的缓入动画
+			clearAllSlideInAnimation();
+			// 给卡片注册缓入动画
 			nextTick(() => {
 				const domList = document.querySelectorAll('.Waterfall .card');
 				domList.forEach((dom) => {
-					registerCardSlideInAnimation(dom as HTMLDivElement);
+					registerSlideInAnimation(dom as HTMLDivElement);
 				});
 			});
 		}
@@ -382,27 +405,7 @@ watch(
 );
 
 onMounted(() => {
-	window.addEventListener('resize', () => {
-		clearTimeout(timer1.value);
-		if (loadedImageCount.value === 0) return;
-		timer1.value = setTimeout(() => {
-			// 清除之前的所有已注册的缓入动画
-			clearAllSlideInAnimation();
-			resetLayout();
-			reLayout(true);
-			if (activeCard.value.src) resizeCardDetail();
-			// 布局完之后，重新给卡片注册缓入动画
-			nextTick(() => {
-				setTimeout(() => {
-					const domList = document.querySelectorAll('.Waterfall .card');
-					domList.forEach((dom) => {
-						registerCardSlideInAnimation(dom as HTMLDivElement);
-					});
-				}, layout.value.transition);
-			});
-		}, 100);
-	});
-
+	window.addEventListener('resize', resizeLayout);
 	window.addEventListener('keydown', registerRemoveMaskOfEscape);
 
 	// 当图片API地址失效时重试其他API
@@ -415,7 +418,9 @@ onMounted(() => {
 	}, 3000);
 });
 onUnmounted(() => {
-	clearTimeout(timer1.value);
+	// 清除之前的所有已注册的缓入动画
+	clearAllSlideInAnimation();
+	window.removeEventListener('resize', resizeLayout);
 	window.removeEventListener('keydown', registerRemoveMaskOfEscape);
 });
 </script>

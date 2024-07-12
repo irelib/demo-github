@@ -2,8 +2,10 @@ import { transformToValue } from '@/utils/index.ts';
 
 // 元素与其缓入动画对象的映射关系
 let slideInMap = new WeakMap();
+// 元素数组
+let domList: HTMLElement[] = [];
 // 元素动画数组
-const animationList: Animation[] = [];
+let animationList: Animation[] = [];
 
 // 元素是否在视口下面
 const isBelowViewport = (DOM: HTMLElement) => {
@@ -27,7 +29,7 @@ const observer = new IntersectionObserver((entries) => {
 });
 
 // 给卡片注册缓入动画
-export const registerCardSlideInAnimation = (DOM: HTMLElement, distance = 80, duration = 500) => {
+export const registerSlideInAnimation = (DOM: HTMLElement, distance = 80, duration = 500) => {
 	if (!distance) distance = 80;
 	if (!duration) distance = 500;
 
@@ -59,6 +61,8 @@ export const registerCardSlideInAnimation = (DOM: HTMLElement, distance = 80, du
 	animation.pause();
 	// 将元素与其动画对象设置映射，方便后续使用它的动画对象
 	slideInMap.set(DOM, animation);
+	// 保存元素s
+	domList.push(DOM);
 	// 保存元素动画
 	animationList.push(animation);
 	// 观察元素是否进入视口
@@ -68,5 +72,10 @@ export const registerCardSlideInAnimation = (DOM: HTMLElement, distance = 80, du
 // 清除卡片缓入动画
 export const clearAllSlideInAnimation = () => {
 	slideInMap = new WeakMap();
-	animationList.forEach((animation) => animation.cancel());
+	domList.forEach((dom, index) => {
+		observer.unobserve(dom);
+		animationList[index].cancel();
+	});
+	domList = [];
+	animationList = [];
 };

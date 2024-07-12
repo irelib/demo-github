@@ -1,4 +1,4 @@
-import { registerCardSlideInAnimation } from '@/utils/slideIn.ts';
+import { registerSlideInAnimation } from '@/utils/slideIn.ts';
 import { App, DirectiveBinding } from 'vue';
 
 type Binding = DirectiveBinding & {
@@ -13,7 +13,7 @@ type Binding = DirectiveBinding & {
 export const slideIn = (app: App) => {
 	app.directive('slideIn', {
 		mounted(el: HTMLElement, binding: Binding) {
-			registerCardSlideInAnimation(el, binding?.value?.distance, binding?.value?.duration);
+			registerSlideInAnimation(el, binding?.value?.distance, binding?.value?.duration);
 		},
 	});
 };
