@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { importAssetsFile } from "@/utils";
+import { importAssetsFile } from '@/utils';
 
 // 歌词字符串
-import { onMounted } from "vue";
+import { onMounted } from 'vue';
 
 // 歌曲文件
-const musicFile = importAssetsFile("assets/艾福杰尼 - SORRY.mp3");
+const musicFile = importAssetsFile('assets/艾福杰尼 - SORRY.mp3');
 // 歌词字符串
 const lyricsString = `[00:00.00]作词 : 艾福杰尼
 [00:01.00]作曲 : 艾福杰尼
@@ -134,51 +134,51 @@ let selectedActiveIndex = 0;
 let lastSelectedActiveIndex = 0;
 
 const registerEvents = () => {
-  const audio = document.querySelector("audio") as HTMLAudioElement;
-  const lyricsContainer = document.querySelector(".lyricsContainer") as HTMLDivElement;
-  const lyricsBox = document.querySelector(".box") as HTMLDivElement;
-  const lyricsRowList = document.querySelectorAll(".box div");
+	const audio = document.querySelector('audio') as HTMLAudioElement;
+	const lyricsContainer = document.querySelector('.lyricsContainer') as HTMLDivElement;
+	const lyricsBox = document.querySelector('.box') as HTMLDivElement;
+	const lyricsRowList = document.querySelectorAll('.box div');
 
-  audio.volume = 0.1;
-  audio.addEventListener("timeupdate", (e: any) => {
-    const currentTime = e.target.currentTime;
-    activeIndex = lyricsList.findIndex((item) => currentTime < item.time);
-    selectedActiveIndex ? (activeIndex = selectedActiveIndex) : null;
-    lyricsRowList.forEach((item) => item.classList.remove("active"));
-    lyricsRowList[(activeIndex > 0 ? activeIndex : lyricsRowList.length) - 1].classList.add("active");
-    if (!lyricsScrollFlag) return;
-    if (activeIndex >= centerIndex) {
-      lyricsBox.style.transform = `translateY(-${(activeIndex - centerIndex) * 46}px)`;
-    }
-    selectedActiveIndex = 0;
-  });
+	audio.volume = 0.1;
+	audio.addEventListener('timeupdate', (e: any) => {
+		const currentTime = e.target.currentTime;
+		activeIndex = lyricsList.findIndex((item) => currentTime < item.time);
+		selectedActiveIndex ? (activeIndex = selectedActiveIndex) : null;
+		lyricsRowList.forEach((item) => item.classList.remove('active'));
+		lyricsRowList[(activeIndex > 0 ? activeIndex : lyricsRowList.length) - 1].classList.add('active');
+		if (!lyricsScrollFlag) return;
+		if (activeIndex >= centerIndex) {
+			lyricsBox.style.transform = `translateY(-${(activeIndex - centerIndex) * 46}px)`;
+		}
+		selectedActiveIndex = 0;
+	});
 
-  lyricsContainer.addEventListener("mouseleave", () => {
-    setTimeout(() => (lyricsScrollFlag = true), 1000);
-  });
-  lyricsContainer.addEventListener("wheel", (e: any) => {
-    lyricsScrollFlag = false;
-    lyricsBox.style.transition = "all 0.2s";
-    const currentTransformY = lyricsBox.style.transform.substring(11) || 0;
-    let newTransformY = Number.parseInt(currentTransformY + "") - e.deltaY;
-    if (newTransformY < -(lyricsRowList.length - 15) * 46) {
-      newTransformY = -(lyricsRowList.length - 15) * 46;
-    } else if (newTransformY >= 0) {
-      newTransformY = 0;
-    } else if (newTransformY === -(lyricsRowList.length - 15) * 46) return;
-    lyricsBox.style.transform = `translateY(${newTransformY}px)`;
-    lyricsBox.clientWidth;
-    lyricsBox.style.transition = "all 0.5s";
-  });
-  lyricsContainer.addEventListener("click", async (e: any) => {
-    lyricsRowList.forEach((item) => item.classList.remove("active"));
-    e.target.classList.add("active");
-    selectedActiveIndex = e.target.dataset.index ?? lastSelectedActiveIndex;
-    lastSelectedActiveIndex = selectedActiveIndex;
-    audio.currentTime = lyricsList[selectedActiveIndex - 1].time;
-    await audio.play();
-    lyricsScrollFlag = true;
-  });
+	lyricsContainer.addEventListener('mouseleave', () => {
+		setTimeout(() => (lyricsScrollFlag = true), 1000);
+	});
+	lyricsContainer.addEventListener('wheel', (e: any) => {
+		lyricsScrollFlag = false;
+		lyricsBox.style.transition = 'all 0.2s';
+		const currentTransformY = lyricsBox.style.transform.substring(11) || 0;
+		let newTransformY = Number.parseInt(currentTransformY + '') - e.deltaY;
+		if (newTransformY < -(lyricsRowList.length - 15) * 46) {
+			newTransformY = -(lyricsRowList.length - 15) * 46;
+		} else if (newTransformY >= 0) {
+			newTransformY = 0;
+		} else if (newTransformY === -(lyricsRowList.length - 15) * 46) return;
+		lyricsBox.style.transform = `translateY(${newTransformY}px)`;
+		lyricsBox.clientWidth;
+		lyricsBox.style.transition = 'all 0.5s';
+	});
+	lyricsContainer.addEventListener('click', async (e: any) => {
+		lyricsRowList.forEach((item) => item.classList.remove('active'));
+		e.target.classList.add('active');
+		selectedActiveIndex = e.target.dataset.index ?? lastSelectedActiveIndex;
+		lastSelectedActiveIndex = selectedActiveIndex;
+		audio.currentTime = lyricsList[selectedActiveIndex - 1].time;
+		await audio.play();
+		lyricsScrollFlag = true;
+	});
 };
 
 /**
@@ -186,107 +186,107 @@ const registerEvents = () => {
  * @param lrcString 歌词字符串
  */
 function parseLrcString(lrcString: string) {
-  const lrc: { time: number; text: string }[] = [];
-  let lineList = lrcString.split("\n");
-  lineList = lineList.filter((item) => item.length > 0);
-  lineList.forEach((item) => {
-    const [minutes, seconds, milliseconds] = item.substring(1, 9).split(/[:.]/);
-    const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseFloat("0." + milliseconds);
-    const itemObj = {
-      time: totalSeconds,
-      text: item.substring(10),
-    };
-    lrc.push(itemObj);
-  });
-  return lrc;
+	const lrc: { time: number; text: string }[] = [];
+	let lineList = lrcString.split('\n');
+	lineList = lineList.filter((item) => item.length > 0);
+	lineList.forEach((item) => {
+		const [minutes, seconds, milliseconds] = item.substring(1, 9).split(/[:.]/);
+		const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseFloat('0.' + milliseconds);
+		const itemObj = {
+			time: totalSeconds,
+			text: item.substring(10),
+		};
+		lrc.push(itemObj);
+	});
+	return lrc;
 }
 
 onMounted(() => {
-  registerEvents();
+	registerEvents();
 });
 </script>
 
 <template>
-  <div class="LyricsScroll">
-    <audio :src="musicFile" controls></audio>
+	<div class="LyricsScroll">
+		<audio :src="musicFile" controls></audio>
 
-    <div class="lyricsContainer">
-      <div class="box">
-        <div v-for="(item, index) in lyricsList" :data-index="index + 1">
-          {{ item.text }}
-        </div>
-      </div>
-    </div>
-  </div>
+		<div class="lyricsContainer">
+			<div class="box">
+				<div v-for="(item, index) in lyricsList" :data-index="index + 1">
+					{{ item.text }}
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <style scoped lang="scss">
 .LyricsScroll {
-  width: 960px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: calc(50vh - 385px);
+	width: 960px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: calc(50vh - 385px);
 
-  audio {
-    width: 500px;
-  }
+	audio {
+		width: 500px;
+	}
 
-  .lyricsContainer {
-    width: 100%;
-    height: 690px;
-    overflow: hidden;
-    margin-top: 25px;
+	.lyricsContainer {
+		width: 100%;
+		height: 690px;
+		overflow: hidden;
+		margin-top: 25px;
 
-    .box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transform: translateY(0);
-      transition: all 0.5s;
+		.box {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			transform: translateY(0);
+			transition: all 0.5s;
 
-      div {
-        width: 100%;
-        text-align: center;
-        color: #4d4d4d;
-        font-size: 22px;
-        height: 46px;
-        flex-shrink: 0;
-        line-height: 46px;
-        -webkit-user-select: none;
-        border-radius: 6px;
-        cursor: pointer;
-        filter: blur(0px);
-        transition:
-          all 0.7s,
-          background-color 0.35s;
+			div {
+				width: 100%;
+				text-align: center;
+				color: #4d4d4d;
+				font-size: 22px;
+				height: 46px;
+				flex-shrink: 0;
+				line-height: 46px;
+				-webkit-user-select: none;
+				border-radius: 6px;
+				cursor: pointer;
+				filter: blur(0px);
+				transition:
+					all 0.7s,
+					background-color 0.35s;
 
-        &:hover {
-          color: #cbcbcb;
-          background-color: #2d2d2d;
-        }
-      }
+				&:hover {
+					color: #cbcbcb;
+					background-color: #2d2d2d;
+				}
+			}
 
-      .active {
-        color: #cbcbcb;
-        font-size: 24px;
-      }
-    }
-  }
+			.active {
+				color: #cbcbcb;
+				font-size: 24px;
+			}
+		}
+	}
 }
 
 @media (prefers-color-scheme: light) {
-  .lyricsContainer .box div {
-    color: #b1b1b1 !important;
+	.lyricsContainer .box div {
+		color: #b1b1b1 !important;
 
-    &:hover {
-      color: #2d2d2d !important;
-      background-color: #ebebeb !important;
-    }
+		&:hover {
+			color: #2d2d2d !important;
+			background-color: #ebebeb !important;
+		}
 
-    &.active {
-      color: #2d2d2d !important;
-    }
-  }
+		&.active {
+			color: #2d2d2d !important;
+		}
+	}
 }
 </style>
