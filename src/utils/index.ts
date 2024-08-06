@@ -1,3 +1,5 @@
+import { ref } from 'vue';
+
 // 常用颜色数组
 export const colorList = ['#e59191', '#dbc585', '#69c09b', '#b199e4', '#d760a8', '#afca66', '#5aa497', '#5e84e4', '#d7a076', '#71b968'];
 
@@ -23,4 +25,9 @@ export const transformToValue = (transform: string): transformToValueType => {
 		y: parseFloat(transformArray[1]),
 	};
 	return transformObj;
+};
+
+// 获取组件实例
+export const useCompRef = <T extends abstract new (...args: any) => any>(_Component: T) => {
+	return ref<InstanceType<T>>();
 };
