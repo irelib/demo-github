@@ -90,6 +90,15 @@ const initPlayer = () => {
 		// 视频跳转到5秒处
 		art.seek = 5;
 	});
+
+	setTimeout(() => {
+		console.log({
+			// 当前播放时间
+			currentTime: art?.currentTime,
+			// 当前播放进度（如0.3指播放了30%）
+			progress: (art?.currentTime || 0) / (art?.duration || 0) || 0,
+		});
+	}, 5000);
 };
 
 onMounted(() => {
