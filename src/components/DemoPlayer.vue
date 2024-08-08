@@ -1,5 +1,5 @@
 <template>
-	<div class="ArtVideoPlayer" style="width: 800px; height: 600px"></div>
+	<div class="DemoPlayer" style="width: 800px; height: 600px"></div>
 </template>
 
 <script setup lang="ts">
@@ -46,7 +46,7 @@ let art: InstanceType<typeof ArtPlayer>;
 // 初始化播放器
 const initPlayer = () => {
 	art = new ArtPlayer({
-		container: '.ArtVideoPlayer',
+		container: '.DemoPlayer',
 		id: 'DemoPlayer',
 		url: 'https://artplayer.org/assets/sample/video.mp4',
 		// 是否显示设置按钮
