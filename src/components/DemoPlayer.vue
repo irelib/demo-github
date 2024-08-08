@@ -98,6 +98,23 @@ const initPlayer = () => {
 			// 当前播放进度（如0.3指播放了30%）
 			progress: (art?.currentTime || 0) / (art?.duration || 0) || 0,
 		});
+
+		// 变更视频画质列表
+		art.quality = [
+			{
+				html: '4K',
+				url: 'https://artplayer.org/assets/sample/video.mp4',
+			},
+			{
+				html: '1080P',
+				url: 'https://artplayer.org/assets/sample/video.mp4',
+			},
+			{
+				default: true,
+				html: '720P',
+				url: 'https://artplayer.org/assets/sample/video.mp4',
+			},
+		];
 	}, 5000);
 };
 
