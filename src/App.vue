@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import VueVideoPlayer from '@com/ArtVideoPlayer.vue';
+import DemoPlayer from '@com/DemoPlayer.vue';
 import OptionListAnime from '@com/OptionListAnime.vue';
 import LyricsScroll from '@com/LyricsScroll.vue';
 import SlideIn from '@com/SlideIn.vue';
@@ -49,6 +50,7 @@ onMounted(() => {
 	<div class="PageContainer">
 		<div class="tabs">
 			<button>Video</button>
+			<button>DemoPlayer</button>
 			<button>Lyrics</button>
 			<button>Anime</button>
 			<button>SlideIn</button>
@@ -59,6 +61,7 @@ onMounted(() => {
 
 		<div class="PageContent">
 			<VueVideoPlayer v-if="activeTab === 'Video'"></VueVideoPlayer>
+			<DemoPlayer v-if="activeTab === 'DemoPlayer'"></DemoPlayer>
 			<OptionListAnime v-if="activeTab === 'Anime'"></OptionListAnime>
 			<LyricsScroll v-if="activeTab === 'Lyrics'"></LyricsScroll>
 			<SlideIn v-if="activeTab === 'SlideIn'"></SlideIn>
