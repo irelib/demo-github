@@ -1,10 +1,12 @@
 <template>
+	<input type="file" @change="change"></input>
 	<div class="DemoPlayer" style="width: 800px; height: 600px"></div>
 </template>
 
 <script setup lang="ts">
 import ArtPlayer from 'artplayer';
 import { onMounted, onUnmounted } from 'vue';
+import { generateVideoThumbnails } from '@/utils';
 
 // 设置功能
 const settings = {
@@ -71,18 +73,14 @@ const initPlayer = () => {
 			},
 		],
 		// 进度条预览图
-		// thumbnails: {
-		// 	// 缩略图（很多小预览图拼接成的一张大图）
-		// 	url: '/src/assets/thumbnails2.png',
-		// 	// 缩略图中，小预览图的总数
-		// 	number: 60,
-		// 	// 缩略图中，每行小预览图的数量
-		// 	column: 10,
-		// 	// 计算后单张小预览图的宽度（不写会自动计算）
-		// 	width: 160,
-		// 	// 计算后单张小预览图的高度（不写会自动计算）
-		// 	height: 90,
-		// },
+		thumbnails: {
+			// 预览图（很多小缩略图拼接成的一张大图）
+			url: '/src/assets/thumbnails_video@row=10&col=10.png',
+			// 缩略图中，小预览图的总数
+			number: 100,
+			// 缩略图中，每行小预览图的数量
+			column: 10,
+		},
 	});
 
 	// 播放器准备就绪时触发
@@ -118,6 +116,12 @@ const initPlayer = () => {
 	}, 5000);
 };
 
+const change = async (e:any) => {
+	const file = e.target.files[0];
+	const res = await generateVideoThumbnails(file)
+	console.log(res);
+};
+
 onMounted(() => {
 	initPlayer();
 });
@@ -128,7 +132,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-.ArtVideoPlayer {
+.DemoPlayer {
 	margin-top: calc(50vh - 300px);
 	border-radius: 8px;
 	overflow: hidden;
