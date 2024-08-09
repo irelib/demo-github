@@ -98,12 +98,13 @@ export async function generateVideoThumbnails(videoFile: File, config: VideoThum
 			if (!blob) {
 				throw new Error('在canvas中生成Blob失败');
 			}
-			const previewFile = new File([blob], `thumbnails_${fileName}@row=${row}&col=${col}.${fileExtension}`, { type: mimeType });
+			const thumbnailsFileName = `thumbnails_${fileName}@row=${row}&col=${col}.${fileExtension}`;
+			const previewFile = new File([blob], thumbnailsFileName, { type: mimeType });
 
 			if (download) {
 				const link = document.createElement('a');
 				link.href = URL.createObjectURL(previewFile);
-				link.download = `thumbnails_${fileName}@row=${row}&col=${col}.${fileExtension}`;
+				link.download = thumbnailsFileName;
 				link.click();
 			}
 
