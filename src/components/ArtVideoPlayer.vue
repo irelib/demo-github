@@ -1,10 +1,11 @@
 <template>
-	<div class="ArtVideoPlayer" style="width: 800px; height: 600px"></div>
+	<div class="ArtVideoPlayer" style="width: 1067px; height: 600px"></div>
 </template>
 
 <script setup lang="ts">
 import { importAssetsFile } from '@/utils';
-import Artplayer from 'artplayer';
+import ArtPlayer from 'artplayer';
+import artPlayerPluginDanmuku from 'artplayer-plugin-danmuku';
 import { onMounted } from 'vue';
 
 const controls = {
@@ -40,13 +41,53 @@ const settings = {
 };
 
 onMounted(() => {
-	const art = new Artplayer({
+	const art = new ArtPlayer({
 		container: '.ArtVideoPlayer',
 		url: 'https://artplayer.org/assets/sample/video.mp4',
-		...controls,
-		...settings,
 		// 是否显示设置按钮
 		setting: true,
+		...controls,
+		...settings,
+		// 自定义控制栏
+		controls: [
+			{
+				name: 'btn1',
+				// 同一位置的按钮按index由小到大从左向右排序
+				index: 1,
+				position: 'right',
+				html: `<img src="${importAssetsFile('assets/play.svg')}" style="width: 24px;height: 24px;" alt="">`,
+				tooltip: '按钮1的tooltip',
+				// 禁用后会消失不见
+				disable: false,
+				click: (item, event) => {
+					item;
+					event;
+				},
+				mounted: (dom) => {
+					dom;
+				},
+			},
+			{
+				name: 'btn3',
+				position: 'right',
+				index: 2,
+				html: 'Subtitle',
+				selector: [
+					{
+						default: true,
+						html: '<span>subtitle 01</span>',
+					},
+					{
+						html: '<span>subtitle 02</span>',
+					},
+				],
+				onSelect: (item, dom) => {
+					item;
+					dom;
+					return '选项' + item.html;
+				},
+			},
+		],
 		// 自定义设置项
 		settings: [
 			{
@@ -137,54 +178,6 @@ onMounted(() => {
 				},
 			},
 		],
-		// 自定义控制栏
-		controls: [
-			{
-				name: 'btn1',
-				// 同一位置的按钮按index由小到大从左向右排序
-				index: 1,
-				position: 'right',
-				html: `<img src="${importAssetsFile('assets/play.svg')}" style="width: 24px;height: 24px;" alt="">`,
-				tooltip: '按钮1的tooltip',
-				// 禁用后会消失不见
-				disable: false,
-				click: (item, event) => {
-					item;
-					event;
-				},
-				mounted: (dom) => {
-					dom;
-				},
-			},
-			{
-				name: 'btn2',
-				index: 2,
-				position: 'right',
-				html: '自定义按钮',
-				style: {
-					marginRight: '10px',
-				},
-			},
-			{
-				name: 'btn3',
-				position: 'right',
-				html: 'Subtitle',
-				selector: [
-					{
-						default: true,
-						html: '<span>subtitle 01</span>',
-					},
-					{
-						html: '<span>subtitle 02</span>',
-					},
-				],
-				onSelect: (item, dom) => {
-					item;
-					dom;
-					return '选项' + item.html;
-				},
-			},
-		],
 		// 自定义右键菜单
 		contextmenu: [
 			{
@@ -200,6 +193,11 @@ onMounted(() => {
 			// 缩略图中，每行小预览图的数量
 			column: 10,
 		},
+		plugins: [
+			artPlayerPluginDanmuku({
+				danmuku: 'https://artplayer.org/assets/sample/danmuku.xml',
+			}),
+		],
 	});
 
 	art.on('ready', () => {});

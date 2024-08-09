@@ -12,6 +12,7 @@
 		"@types/node": "^20.14.9",
 		"animejs": "^3.2.2",
 		"artplayer": "^5.1.6",
+		"artplayer-plugin-danmuku": "^5.1.4",
 		"vue": "^3.4.21"
 	},
 	"devDependencies": {
