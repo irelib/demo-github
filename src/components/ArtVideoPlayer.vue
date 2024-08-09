@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import { importAssetsFile } from '@/utils';
 import Artplayer from 'artplayer';
 import { onMounted } from 'vue';
 
@@ -52,7 +53,7 @@ onMounted(() => {
 				html: '设置项标题1',
 				width: 250,
 				tooltip: '设置项说明',
-				icon: '<img src="/src/assets/play.svg" alt="">',
+				icon: `<img src="${importAssetsFile('assets/play.svg')}" alt="">`,
 				selector: [
 					{
 						default: true,
@@ -143,7 +144,7 @@ onMounted(() => {
 				// 同一位置的按钮按index由小到大从左向右排序
 				index: 1,
 				position: 'right',
-				html: '<img src="/src/assets/play.svg" style="width: 24px;height: 24px;" alt="">',
+				html: `<img src="${importAssetsFile('assets/play.svg')}" style="width: 24px;height: 24px;" alt="">`,
 				tooltip: '按钮1的tooltip',
 				// 禁用后会消失不见
 				disable: false,
@@ -192,16 +193,12 @@ onMounted(() => {
 		],
 		// 进度条预览图
 		thumbnails: {
-			// 缩略图（很多小预览图拼接成的一张大图）
-			url: '/src/assets/thumbnails2.png',
+			// 导入本地静态资源
+			url: importAssetsFile('assets/thumbnails_video@row=10&col=10.png'),
 			// 缩略图中，小预览图的总数
-			number: 60,
+			number: 100,
 			// 缩略图中，每行小预览图的数量
 			column: 10,
-			// 计算后单张小预览图的宽度（不写会自动计算）
-			width: 160,
-			// 计算后单张小预览图的高度（不写会自动计算）
-			height: 90,
 		},
 	});
 

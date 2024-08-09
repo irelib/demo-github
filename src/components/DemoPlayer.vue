@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import ArtPlayer from 'artplayer';
 import { onMounted, onUnmounted } from 'vue';
-import { generateVideoThumbnails } from '@/utils';
+import { generateVideoThumbnails, importAssetsFile } from '@/utils';
 
 // 设置功能
 const settings = {
@@ -74,8 +74,8 @@ const initPlayer = () => {
 		],
 		// 进度条预览图
 		thumbnails: {
-			// 预览图（很多小缩略图拼接成的一张大图）
-			url: '/src/assets/thumbnails_video@row=10&col=10.png',
+			// 导入本地静态资源
+			url: importAssetsFile('assets/thumbnails_video@row=10&col=10.png'),
 			// 缩略图中，小预览图的总数
 			number: 100,
 			// 缩略图中，每行小预览图的数量
