@@ -33,7 +33,7 @@ export const useCompRef = <T extends abstract new (...args: any) => any>(_Compon
 };
 
 // 生成视频预览图
-export async function generateVideoThumbnails(videoFile: File, config: VideoThumbnailsConfig = {}): Promise<File> {
+export const generateVideoThumbnails = async (videoFile: File, config: VideoThumbnailsConfig = {}): Promise<File> => {
 	const { row = 10, col = 10, download = false, imageType = 'png', imageMaxSize = 1024, thumbnailsMinLength = 100 } = config;
 	imageMaxSize;
 
@@ -111,4 +111,4 @@ export async function generateVideoThumbnails(videoFile: File, config: VideoThum
 			resolve(previewFile);
 		}, mimeType);
 	});
-}
+};
