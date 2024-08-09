@@ -16,6 +16,6 @@ type VideoThumbnailsConfig = {
 	imageType?: 'png' | 'jpeg';
 	// 预览图文件的最大大小（单位：kb）
 	imageMaxSize?: number;
-	// 每张缩略图短边的最小长度（单位：px）
+	// 每张缩略图短边的最小长度（单位：px）【未实现此功能】
 	thumbnailsMinLength?: number;
 };

@@ -32,16 +32,26 @@ export const useCompRef = <T extends abstract new (...args: any) => any>(_Compon
 	return ref<InstanceType<T>>();
 };
 
-// 改造这个函数，实现最终生成的预览图文件大小不大于imageMaxSize（单位kb）
+// 生成视频预览图
 export async function generateVideoThumbnails(videoFile: File, config: VideoThumbnailsConfig = {}): Promise<File> {
 	const { row = 10, col = 10, download = true, imageType = 'png', imageMaxSize = 1024, thumbnailsMinLength = 100 } = config;
+	imageMaxSize;
+
+	let fileName = videoFile.name.split('.')[0];
+	while (fileName.includes('  ')) {
+		fileName = fileName.replace('  ', ' ');
+	}
+	while (fileName.includes(' ') || fileName.includes('@')) {
+		fileName = fileName.replace(' ', '_');
+		fileName = fileName.replace('@', '_');
+	}
 
 	const video = document.createElement('video');
 	const canvas = document.createElement('canvas');
 	const ctx = canvas.getContext('2d');
 
 	if (!ctx) {
-		throw new Error('Failed to get canvas context');
+		throw new Error('获取canvas失败');
 	}
 
 	video.src = URL.createObjectURL(videoFile);
@@ -88,12 +98,12 @@ export async function generateVideoThumbnails(videoFile: File, config: VideoThum
 			if (!blob) {
 				throw new Error('在canvas中生成Blob失败');
 			}
-			const previewFile = new File([blob], `thumbnails_${videoFile.name.split('.')[0]}.${fileExtension}`, { type: mimeType });
+			const previewFile = new File([blob], `thumbnails_${fileName}@row=${row}&col=${col}.${fileExtension}`, { type: mimeType });
 
 			if (download) {
 				const link = document.createElement('a');
 				link.href = URL.createObjectURL(previewFile);
-				link.download = `thumbnails_${videoFile.name.split('.')[0]}.${fileExtension}`;
+				link.download = `thumbnails_${fileName}@row=${row}&col=${col}.${fileExtension}`;
 				link.click();
 			}
 
