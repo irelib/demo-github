@@ -10,8 +10,8 @@ export const importAssetsFile = (url: string) => {
 };
 
 // 将元素的transform字符串转换成对象形式
-export const transformToValue = (transform: string): transformToValueType => {
-	let transformObj: transformToValueType = {
+export const transformToValue = (transform: string): TransformToValueType => {
+	let transformObj: TransformToValueType = {
 		x: 0,
 		y: 0,
 	};
@@ -31,3 +31,73 @@ export const transformToValue = (transform: string): transformToValueType => {
 export const useCompRef = <T extends abstract new (...args: any) => any>(_Component: T) => {
 	return ref<InstanceType<T>>();
 };
+
+// 改造这个函数，实现最终生成的预览图文件大小不大于imageMaxSize（单位kb）
+export async function generateVideoThumbnails(videoFile: File, config: VideoThumbnailsConfig = {}): Promise<File> {
+	const { row = 10, col = 10, download = true, imageType = 'png', imageMaxSize = 1024, thumbnailsMinLength = 100 } = config;
+
+	const video = document.createElement('video');
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+
+	if (!ctx) {
+		throw new Error('Failed to get canvas context');
+	}
+
+	video.src = URL.createObjectURL(videoFile);
+
+	await new Promise<void>((resolve) => {
+		video.onloadedmetadata = () => {
+			resolve();
+		};
+	});
+
+	const videoWidth = video.videoWidth;
+	const videoHeight = video.videoHeight;
+	const shortSide = Math.min(videoWidth, videoHeight);
+	const scaleRatio = thumbnailsMinLength / shortSide;
+
+	const frameWidth = Math.round(videoWidth * scaleRatio);
+	const frameHeight = Math.round(videoHeight * scaleRatio);
+
+	canvas.width = frameWidth * col;
+	canvas.height = frameHeight * row;
+
+	const totalFrames = row * col;
+	const duration = video.duration;
+	const interval = duration / totalFrames;
+
+	for (let i = 0; i < totalFrames; i++) {
+		const time = i * interval;
+		await new Promise<void>((resolve) => {
+			video.currentTime = time;
+			video.onseeked = () => {
+				const x = (i % col) * frameWidth;
+				const y = Math.floor(i / col) * frameHeight;
+				ctx.drawImage(video, 0, 0, videoWidth, videoHeight, x, y, frameWidth, frameHeight);
+				resolve();
+			};
+		});
+	}
+
+	const mimeType = imageType.toLowerCase() === 'jpeg' ? 'image/jpeg' : 'image/png';
+	const fileExtension = mimeType.split('/')[1];
+
+	return new Promise<File>((resolve) => {
+		canvas.toBlob((blob) => {
+			if (!blob) {
+				throw new Error('在canvas中生成Blob失败');
+			}
+			const previewFile = new File([blob], `thumbnails_${videoFile.name.split('.')[0]}.${fileExtension}`, { type: mimeType });
+
+			if (download) {
+				const link = document.createElement('a');
+				link.href = URL.createObjectURL(previewFile);
+				link.download = `thumbnails_${videoFile.name.split('.')[0]}.${fileExtension}`;
+				link.click();
+			}
+
+			resolve(previewFile);
+		}, mimeType);
+	});
+}
